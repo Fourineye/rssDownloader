@@ -1,3 +1,12 @@
+'''
+    Paul Smith
+    
+    A python class for holding rss feed data and saving it in usable format
+    for the app.
+      
+'''
+
+
 import os, time
 import feedparser as fp
 from simple_term_menu import TerminalMenu
@@ -37,7 +46,7 @@ class Manifest:
     def from_fp(feed_object):
         manifest = Manifest()
         manifest.title = feed_object.feed.title
-        manifest.author = feed_object.feed.title
+        manifest.author = feed_object.feed.author
         manifest.folder = '../' + clean_path(manifest.title.replace(" ", "_")) + '/'
         manifest.url = feed_object.href
         manifest.last_updated = feed_object.feed.updated_parsed
@@ -90,6 +99,8 @@ class Manifest:
                     self.episodes.insert(number, Episode.from_fp(feed_episode, self.folder, number))
                 else:
                     episode.update_fp(feed_episode, number)
+        fprint('Manifest updated', 'gt')
+        pause()
     
     def view_episodes(self):
         # Initialize variables
@@ -136,12 +147,7 @@ class Manifest:
                 selecting_episode = False
                 clear()
             else:
-                if current_page == 1:
-                    episode += 1
-                print(episode)
-                print(episodes[episode])
                 episode = self.get_episode(episodes[episode])
-                print(episode)
                 selecting_episode = episode.view()
                 self.save_to_json()
                 clear()
